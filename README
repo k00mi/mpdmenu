@@ -1,2 +1,3 @@
 mpdmenu is a small script to modify your MPD playlist using dmenu.
+You can add and remove songs, clear the playlist or jump to a position in the playlist.
 Since it uses mpc to interact with MPD, it would be easy to add other options (e.g. change volume/repeat/...).
