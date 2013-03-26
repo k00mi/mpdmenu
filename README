@@ -1,0 +1,2 @@
+mpdmenu is a small script to modify your MPD playlist using dmenu.
+Since it uses mpc to interact with MPD, it would be easy to add other options (e.g. change volume/repeat/...).
