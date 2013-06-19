@@ -1,5 +1,5 @@
 #!/bin/bash
-MPC="mpc --quiet"
+MPC="mpc --quiet -p ${1:-6600}"
 
 DMENU() {
     # Vertical menu if $3 is given
@@ -30,19 +30,28 @@ add() {
     fi
 }
 
+get_playlist() {
+    $MPC -f "%position% - %artist% - %album% - %title%" playlist
+}
+
 remove() {
-    local playlist="$($MPC -f %position%\ -\ %artist%\ -\ %album%\ -\ %title% playlist)"
-    local song=$(DMENU "$playlist" "Select song" $($MPC playlist | wc -l))
+    local playlist=$(get_playlist)
+    local height=$(echo $playlist | wc -l)
+    local song=$(DMENU "$playlist" "Select song" $height)
+
     [ -n "$song" ] && $MPC del ${song%%\ *}
 }
 
 jump() {
-    local playlist="$($MPC -f %position%\ -\ %artist%\ -\ %album%\ -\ %title% playlist)"
-    local listLength=$($MPC playlist | wc -l)
-    if [ $listLength -gt 40 ]; then
-        listLength=40
+    local playlist=$(get_playlist)
+    local list_length=$(echo $get_playlist | wc -l)
+
+    if [ $list_length -gt 40 ]; then
+        list_length=40
     fi
-    local song=$(DMENU "$playlist" "Select song" $listLength)
+
+    local song=$(DMENU "$playlist" "Select song" $list_length)
+
     [ -n "$song" ] && $MPC play ${song%%\ *}
 }
 
