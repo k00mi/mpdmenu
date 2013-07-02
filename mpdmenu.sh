@@ -6,7 +6,7 @@ height=20
 
 DMENU() {
     # Vertical menu if $3 is given
-    echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l $3"}
+    echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l" $3}
 }
 
 get_playlist() {
