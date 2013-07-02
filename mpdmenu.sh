@@ -6,25 +6,35 @@ height=20
 
 DMENU() {
     # Vertical menu if $3 is given
-    echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l"} $3
+    echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l $3"}
+}
+
+get_playlist() {
+    $MPC -f "%position% - %artist% - %album% - %title%" playlist
+}
+
+select_from() {
+    DMENU "$1" "Select $2" $height
 }
 
 add() {
-    local artist=$(DMENU "$($MPC list Artist)\nall" "Select artist" $height)
+    all="[ALL]"
 
-    if [ "$artist" = "all" ]; then
+    local artist=$(select_from "$($MPC list Artist)\n$all" "artist")
+
+    if [ "$artist" = "$all" ]; then
         $MPC listall | $MPC add;
     elif [ -n "$artist" ]; then
         local albums=$($MPC list Album Artist "$artist")
-        local album=$(DMENU "$albums\nall" "Select album" $height)
+        local album=$(select_from "$albums\n$all" "album")
 
-        if [ "$album" = "all" ]; then
+        if [ "$album" = "$all" ]; then
             $MPC findadd Artist "$artist"
         elif [ -n "$album" ]; then
             local songs=$($MPC list Title Album "$album")
-            local song=$(DMENU "$songs\nall" "Select song" $height)
+            local song=$(select_from "$songs\n$all" "song")
 
-            if [ "$song" = "all" ]; then
+            if [ "$song" = "$all" ]; then
                 $MPC findadd Album "$album"
             elif [ -n "$song" ]; then
                 $MPC findadd Title "$song"
@@ -33,20 +43,16 @@ add() {
     fi
 }
 
-get_playlist() {
-    $MPC -f "%position% - %artist% - %album% - %title%" playlist
-}
-
 remove() {
     local playlist=$(get_playlist)
-    local song=$(DMENU "$playlist" "Select song" $height)
+    local song=$(select_from "$playlist" "song")
 
     [ -n "$song" ] && $MPC del ${song%%\ *}
 }
 
 jump() {
     local playlist=$(get_playlist)
-    local song=$(DMENU "$playlist" "Select song" $height)
+    local song=$(select_from "$playlist" "song")
 
     [ -n "$song" ] && $MPC play ${song%%\ *}
 }
