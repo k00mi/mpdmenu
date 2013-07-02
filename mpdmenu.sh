@@ -1,25 +1,28 @@
 #!/bin/bash
 MPC="mpc --quiet -p ${1:-6600}"
 
+# max height for vertical menu
+height=20
+
 DMENU() {
     # Vertical menu if $3 is given
     echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l"} $3
 }
 
 add() {
-    local artist=$(DMENU "$($MPC list Artist)\nall" "Select artist" 20)
+    local artist=$(DMENU "$($MPC list Artist)\nall" "Select artist" $height)
 
     if [ "$artist" = "all" ]; then
         $MPC listall | $MPC add;
     elif [ -n "$artist" ]; then
         local albums=$($MPC list Album Artist "$artist")
-        local album=$(DMENU "$albums\nall" "Select album" 20)
+        local album=$(DMENU "$albums\nall" "Select album" $height)
 
         if [ "$album" = "all" ]; then
             $MPC findadd Artist "$artist"
         elif [ -n "$album" ]; then
             local songs=$($MPC list Title Album "$album")
-            local song=$(DMENU "$songs\nall" "Select song" 20)
+            local song=$(DMENU "$songs\nall" "Select song" $height)
 
             if [ "$song" = "all" ]; then
                 $MPC findadd Album "$album"
@@ -36,7 +39,6 @@ get_playlist() {
 
 remove() {
     local playlist=$(get_playlist)
-    local height=$(echo $playlist | wc -l)
     local song=$(DMENU "$playlist" "Select song" $height)
 
     [ -n "$song" ] && $MPC del ${song%%\ *}
@@ -44,13 +46,7 @@ remove() {
 
 jump() {
     local playlist=$(get_playlist)
-    local list_length=$(echo $get_playlist | wc -l)
-
-    if [ $list_length -gt 40 ]; then
-        list_length=40
-    fi
-
-    local song=$(DMENU "$playlist" "Select song" $list_length)
+    local song=$(DMENU "$playlist" "Select song" $height)
 
     [ -n "$song" ] && $MPC play ${song%%\ *}
 }
