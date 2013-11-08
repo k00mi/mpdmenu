@@ -6,7 +6,7 @@ height=20
 
 DMENU() {
     # Vertical menu if $3 is given
-    echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l" $3}
+    echo -e "$1" | dmenu -i -b -p "$2" ${3:+"-l" "$3"}
 }
 
 get_playlist() {
@@ -47,14 +47,14 @@ remove() {
     local playlist=$(get_playlist)
     local song=$(select_from "$playlist" "song")
 
-    [ -n "$song" ] && $MPC del ${song%%\ *}
+    [ -n "$song" ] && $MPC del "${song%%\ *}"
 }
 
 jump() {
     local playlist=$(get_playlist)
     local song=$(select_from "$playlist" "song")
 
-    [ -n "$song" ] && $MPC play ${song%%\ *}
+    [ -n "$song" ] && $MPC play "${song%%\ *}"
 }
 
 while true; do
