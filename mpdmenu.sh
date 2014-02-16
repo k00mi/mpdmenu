@@ -57,13 +57,37 @@ jump() {
     [ -n "$song" ] && $MPC play "${song%%\ *}"
 }
 
+play(){
+    $MPC play
+}
+
+pause(){
+    $MPC pause
+}
+
+stop(){
+    $MPC stop
+}
+
+next(){
+    $MPC next
+}
+
+prev(){
+    $MPC prev
+}
 while true; do
-    action=$(DMENU "Clear\nAdd\nRemove\nJump" "Do you want to")
+    action=$(DMENU "Clear\nAdd\nRemove\nJump\nPlay\nPause\nStop\nNext\nPrev" "Do you want to")
     case $action in
         Clear) $MPC clear;;
         Add) add;;
         Remove) remove;;
         Jump) jump;;
+        Pause) pause;;
+        Play) play;;
+        Stop) stop;;
+        Next) next;;
+        Prev) prev;;
         "") exit 0;;
     esac
 done
