@@ -57,6 +57,10 @@ jump() {
     [ -n "$song" ] && $MPC play "${song%%\ *}"
 }
 
+toggle(){
+    $MPC toggle
+}
+
 play(){
     $MPC play
 }
@@ -77,13 +81,14 @@ prev(){
     $MPC prev
 }
 while true; do
-    action=$(DMENU "Clear\nAdd\nRemove\nJump\nPlay\nPause\nStop\nNext\nPrev" "Do you want to")
+    action=$(DMENU "Clear\nAdd\nRemove\nJump\nToggle\nPlay\nPause\nStop\nNext\nPrev" "Do you want to")
     case $action in
         Clear) $MPC clear;;
         Add) add;;
         Remove) remove;;
         Jump) jump;;
         Pause) pause;;
+        Toggle) toggle;;
         Play) play;;
         Stop) stop;;
         Next) next;;
